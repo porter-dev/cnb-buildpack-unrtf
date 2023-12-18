@@ -1,0 +1,16 @@
+{
+    "name": "unrtf",
+    "version": "0.21.10",
+    "type": "tarball",
+    "archive": "unrtf-0.21.10.tar.gz",
+    "build": [
+        "aclocal",
+        "automake --add-missing",
+        "autoreconf -ivf",
+        "./configure --prefix=${buildpack_layer}",
+        "make all",
+        "make install-strip",
+        "mkdir -p ${buildpack_layer}/config",
+        "cp -R ${buildpack_layer}/share/. ${buildpack_layer}/config"
+    ]
+}
