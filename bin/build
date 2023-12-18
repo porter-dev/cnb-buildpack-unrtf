@@ -99,6 +99,17 @@ install_bin() {
         done
     fi
 
+    # a bin/post-build can be used to trigger custom logic for the buildpack
+    # it is strictly responsible for it's own caching logic
+    if [[ -f "$CNB_BUILDPACK_DIR/bin/post-build" ]]; then
+        # grant the post-build script access to helper functions
+        export -f puts-header
+        export -f puts-info
+        export -f puts-step
+        export -f indent
+        "$CNB_BUILDPACK_DIR/bin/post-build"
+    fi
+
     puts-step "Creating launch configuration"
     cat <<EOF >"${CNB_LAYERS_DIR}/launch.toml"
 [[processes]]
@@ -115,6 +126,16 @@ EOF
 launch = true
 cache = true
 TOML
+
+    # provide the ability to modify the launch config after the fact
+    if [[ -f "$CNB_BUILDPACK_DIR/bin/post-launch-config" ]]; then
+        # grant the post-build script access to helper functions
+        export -f puts-header
+        export -f puts-info
+        export -f puts-step
+        export -f indent
+        "$CNB_BUILDPACK_DIR/bin/post-launch-config"
+    fi
 }
 
 install_bin
