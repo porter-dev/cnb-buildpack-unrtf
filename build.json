@@ -4,6 +4,7 @@
     "type": "tarball",
     "archive": "unrtf-0.21.10.tar.gz",
     "build": [
+        "touch README.md",
         "aclocal",
         "automake --add-missing",
         "autoreconf -ivf",
